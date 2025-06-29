@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice History</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    h2.invoice-heading {
+      text-align: center;
+      font-weight: bold;
+      margin: 40px 0 30px;
+      color: #000;
+    }
+   table th {
+  background-color: rgb(175, 183, 192) !important;
+  color: white;
+}
+
+    .table td, .table th {
+      vertical-align: middle;
+    }
+
+   
+  </style>
+</head>
+<body>
+
+  {% include "core/navbar.html" %}
+
+  <div class="container">
+    <h2 class="invoice-heading">Invoice History</h2>
+
+    <!-- 🔍 Search Bar -->
+    <form method="get" class="mb-4">
+      <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Search by Invoice No, Name, or Phone..." value="{{ query }}">
+        <button class="btn btn-dark" type="submit">Search</button>
+      </div>
+    </form>
+
+    <!-- 📜 Invoice Table -->
+    <div class="table-responsive ">
+      <table class="table table-bordered table-striped ">
+        <thead class="text-white">
+          <thead>
+  <tr class="text-white">
+    <th>Invoice No</th>
+    <th>Customer Name</th>
+    <th>Phone</th>
+    <th>Date</th>
+    <th class="text-end">Total (₹)</th>
+  </tr>
+</thead>
+
+        </thead>
+        <tbody>
+          {% for inv in invoices %}
+          <tr>
+            <td>{{ inv.inv_no }}</td>
+            <td>{{ inv.customer_name }}</td>
+            <td>{{ inv.customer_phone }}</td>
+            <td>{{ inv.created_at|date:"d M Y, h:i A" }}</td>
+            <td class="text-end">₹{{ inv.total_amount|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-muted">No invoices found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6fWgWQrbM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5Kk" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h2>{{ invoice_number }}</h2>
+    <p><strong>Customer:</strong> {{ customer_name }}</p>
+    <p><strong>Phone:</strong> {{ customer_phone }}</p>
+    <p><strong>Date:</strong> {{ invoice_date }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total (with GST)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in billings %}
+            <tr>
+                <td>{{ bill.item.item_name|default:bill.custom_item_name }}</td>
+                <td>{{ bill.quantity }}</td>
+                <td>₹{{ bill.price }}</td>
+                <td>₹{{ bill.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Grand Total: ₹{{ grand_total }}</h3>
+</body>
+</html>

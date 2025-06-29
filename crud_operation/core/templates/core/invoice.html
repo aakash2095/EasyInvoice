@@ -1,0 +1,339 @@
+{% comment %} <!-- templates/core/invoice.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .invoice-box {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 40px;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 10px;
+        }
+        .invoice-title {
+            background: #343a40;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+        }
+        table th, table td {
+            vertical-align: middle !important;
+        }
+        .table th {
+            background-color: #f1f1f1;
+        }
+        @media print {
+            .no-print, .no-print * {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-box shadow">
+    <div class="invoice-title mb-4">
+        <h2 class="m-0">🧾 Customer Invoice</h2>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="mb-3">
+        <p><strong>Name:</strong> {{ customer_name }}</p>
+        <p><strong>Phone:</strong> {{ customer_phone }}</p>
+        <p><strong>Date:</strong> {{ now|date:"d M Y, H:i A" }}</p>
+    </div>
+
+    <!-- Bill Items -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center align-middle">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price (₹)</th>
+                    <th>GST %</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in billings %}
+                <tr>
+                    <td>{{ bill.item.name|default:bill.custom_item_name }}</td>
+                    <td>{{ bill.quantity }}</td>
+                    <td>{{ bill.price }}</td>
+                    <td>{{ bill.gst }}</td>
+                    <td><strong>{{ bill.total|floatformat:2 }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="text-end mt-4">
+        <h4 class="fw-bold">Grand Total: ₹{{ grand_total|floatformat:2 }}</h4>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-4 d-flex justify-content-between no-print">
+        <button onclick="printInvoice()" class="btn btn-outline-primary">
+            🖨️ Print / Download
+        </button>
+        <a href="https://wa.me/?text={{ whatsapp_message|urlencode }}" target="_blank" class="btn btn-outline-success">
+            📤 Share on WhatsApp
+        </a>
+    </div>
+</div>
+
+<script>
+</script>
+
+</body>
+</html> {% endcomment %}
+
+{% comment %} function printInvoice() {
+    const noPrintElements = document.querySelectorAll('.no-print');
+    noPrintElements.forEach(el => el.style.display = 'none');
+    window.print();
+    setTimeout(() => {
+        noPrintElements.forEach(el => el.style.display = '');
+    }, 1000);
+} {% endcomment %}
+
+
+
+
+
+
+<!-- templates/core/invoice.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+        .invoice-box {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 0;
+        }
+        .invoice-header {
+            background: #939ebd;
+background: linear-gradient(90deg, rgba(147, 158, 189, 1) 0%, rgba(52, 38, 201, 1) 96%, rgba(75, 75, 196, 1) 100%);
+            
+            color: #fff;
+            padding: 20px;
+            border-radius: 4px 4px 0 0;
+        }
+        .company-info {
+            font-size: 14px;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            table-layout: fixed;
+        }
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            word-wrap: break-word;
+            text-align: center;
+            font-size: 14px;
+        }
+        .invoice-table th {
+            background-color: #f0f0f0;
+        }
+        .totals {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .section {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        .section-title {
+            font-weight: bold;
+            color:rgb(71, 92, 231);
+            margin-bottom: 5px;
+        }
+        .signature {
+            margin-top: 60px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .signature-line {
+            margin-top: 10px;
+            border-top: 1px solid #000;
+            width: 200px;
+            float: right;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .invoice-box {
+                page-break-after: avoid;
+                border: none;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-box">
+
+    <!-- Header -->
+    <div class="invoice-header d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="m-0">
+  <img src="{% static 'core/images/tbalaji.png' %}" alt="Logo" style="height: 60px; width:60px; vertical-align: middle;">
+  <strong style="color: black; margin-left:-10px;">BALAJI</strong>
+  <strong>COMPUTERS</strong>
+</h4>
+
+            <p class="company-info m-0" style="font-size: 12px;">
+                SHOP NO: 06, CHANDRESH CHAYA, LODHA HEAVEN<br>
+                NILJE, DOMBIVLI EAST – 421204
+            </p>
+        </div>
+        <div class="text-end">
+            <h4 class="m-0">{{invoice_number }}</h4>
+        </div>
+    </div>
+
+    <!-- Customer & Company -->
+    <div class="row mt-4">
+        <div class="col-6">
+            <div class="section-title">Invoice To</div>
+            <p>
+               <strong> Name:</strong> {{ customer_name }}<br>
+                <strong>Phone:</strong>  +91 {{ customer_phone }}<br>
+                 <strong>Date:</strong> {% now "d M Y, h:i A" %} 
+
+                
+            </p>
+        </div>
+        <div class="col-6 text-end">
+            <div class="section-title">Invoice From</div>
+            <p>
+                <strong>Balaji Computers & Mobile</strong><br>
+                {{ request.user.email }}<br>
+                +91 9136202097
+            </p>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <table class="invoice-table">
+        <thead>
+        <tr>
+            <th style="width: 5%;">#</th>
+            <th style="width: 35%;">Item Name</th>
+            <th style="width: 15%;">Price</th>
+            <th style="width: 10%;">Qty</th>
+            <th style="width: 10%;">GST%</th>
+            <th style="width: 11%;">warranty</th>
+            <th style="width: 25%;">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bill in billings %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% if bill.item %}
+                        {{ bill.item.item_name }}
+                    {% else %}
+                        {{ bill.custom_item_name }}
+                    {% endif %}
+                </td>
+                <td>₹{{ bill.price }}</td>
+                <td>{{ bill.quantity }}</td>
+                <td>{{ bill.gst }}</td>
+                <td>{{ bill.warranty }} years</td>
+                <td>₹{{ bill.total|floatformat:2 }}</td>
+                
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="6" style="text-align: right;"><strong>Grand Total</strong></td>
+            <td style="color: green;"><strong>₹{{ grand_total|floatformat:2 }}</strong></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <!-- Terms and Payment -->
+    <div class="row section">
+        <div class="col-12">
+            <div class="section-title">Terms & Conditions</div>
+           <p>1. Manufacturing defect expect damage will be replaced within 24 hours only <br>
+              2. No warranty on physically damage and burnt items <br>
+              3. Warranty on all the products will be provided by their respected service centers only <br>
+              4. No warranty by shop, No Warranty on Softwares <br>
+              5. Goods once Sold will not be taken back <br>
+              6. Price & availabilty subject to change without prior notice <br>
+              7. Local product No Warranty</p>
+        </div>
+    </div>
+
+    <!-- Signature -->
+    <div class="text-end mt-5">
+  <!-- Stamp Image -->
+  <img src="{% static 'core/images/signb.png' %}" alt="Stamp" class="img-fluid" style="width: 120px; opacity: 0.9; height:100px;">
+
+  <!-- Signature Line and Label -->
+  <p class="mb-0  fw-bold">Authorized Signatory</p>
+  
+</div>
+
+    <br>
+    <!-- Buttons -->
+    <div class="no-print mt-4 d-flex justify-content-between">
+        <button class="btn btn-outline-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+<a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success">
+  📤 Send WhatsApp Message
+</a>
+
+    </div>
+
+</div>
+</body>
+</html>

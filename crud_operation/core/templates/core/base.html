@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Billing{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'core/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/core.css' %}">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #f4f6f9;
+      overflow: hidden; /* Prevent vertical scrolling */
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .cover-page {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .company-box {
+      background: white;
+      padding: 60px 80px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 2px solid #dee2e6;
+    }
+
+    .company-name {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #212529;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: #6c757d;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  {% include 'core/navbar.html' %}
+
+  <div class="container-fluid cover-page">
+    <div class="company-box">
+      <div class="company-name">BALAJI COMPUTERS</div>
+      <div class="tagline">Your One-Stop IT & Electronics Solution</div>
+    </div>
+  </div>
+
+  <script src="{% static 'core/js/jquery.js' %}"></script>
+  <script src="{% static 'core/js/popper.js' %}"></script>
+  <script src="{% static 'core/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
